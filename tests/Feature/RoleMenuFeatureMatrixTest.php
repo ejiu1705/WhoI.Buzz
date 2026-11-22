@@ -133,7 +133,7 @@ class RoleMenuFeatureMatrixTest extends TestCase
         $this->get('/akun')
             ->assertOk()
             ->assertSee('Pengaturan Profil Akun')
-            ->assertDontSee('Token API');
+            ->assertDontSee('Token Akses Integrasi');
 
         // 3. Fitur AI Parse Sertifikat
         $parsePng = $this->makeUniquePng(101);
@@ -277,7 +277,7 @@ class RoleMenuFeatureMatrixTest extends TestCase
             ->assertDontSee('/admin/api-console');
 
         $this->get('/laporan-progres')->assertOk()->assertSee('Nadia Putri Mahardika');
-        $this->get('/akun')->assertOk()->assertDontSee('Token API');
+        $this->get('/akun')->assertOk()->assertDontSee('Token Akses Integrasi');
 
         // 2. Pratinjau Vault mahasiswa bimbingan -> 200 OK
         $this->get($fileSingle->temporarySignedPreviewUrl(5))->assertOk();
@@ -389,7 +389,7 @@ class RoleMenuFeatureMatrixTest extends TestCase
         $this->get('/dosen/dashboard')->assertOk();
         $this->get('/mitra/dashboard')->assertOk();
         $this->get('/admin/api-console')->assertOk();
-        $this->get('/akun')->assertOk()->assertSee('Token API');
+        $this->get('/akun')->assertOk()->assertSee('Token Akses Integrasi');
 
         // 2. Fitur Auto-Claim Tier 1 Batch
         $this->post('/admin/auto-claim', [
@@ -498,7 +498,7 @@ class RoleMenuFeatureMatrixTest extends TestCase
         $this->get("/kurikulum-skpi/{$category->id}")->assertOk();
 
         // Info Akun Mandiri (tanpa panel Token API)
-        $this->get('/akun')->assertOk()->assertDontSee('Token API');
+        $this->get('/akun')->assertOk()->assertDontSee('Token Akses Integrasi');
         $this->put('/akun', [
             'name' => 'HRD TechCorp Indonesia',
             'email' => $mitra->email,
