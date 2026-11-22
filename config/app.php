@@ -41,6 +41,8 @@ return [
 
     'debug' => (bool) env('APP_DEBUG', false),
 
+    'show_demo_accounts' => (bool) env('SHOW_DEMO_ACCOUNTS', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application URL

@@ -58,28 +58,30 @@
                 </a>
             </div>
 
-            {{-- Subtle Collapsible Reference for Local Development Accounts --}}
-            <details class="mt-5 rounded-2xl bg-[#4C2500]/6 border border-[#4C2500]/12 px-4 py-3 text-xs">
-                <summary class="cursor-pointer font-bold text-[#4C2500]/80 select-none">
-                    Daftar Akun Uji Lokal (Admin / Dosen / Mahasiswa / Mitra)
-                </summary>
-                <div class="mt-3 space-y-2 border-t border-[#4C2500]/10 pt-3">
-                    <p class="text-[11px] text-[#4C2500]/70">Sandi standar: <code class="font-mono font-bold">password123</code></p>
-                    @foreach($demoAccounts as $acc)
-                        <div class="flex items-center justify-between gap-2 rounded-xl bg-[#FDF6DC] px-3 py-2 border border-[#4C2500]/10">
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-extrabold uppercase text-[#CD7000]">{{ $acc->primaryRole() }}</span>
-                                <p class="font-mono text-[11px] text-[#4C2500] truncate">{{ $acc->email }}</p>
+            {{-- Daftar Akun Demo (aktif di lokal atau saat SHOW_DEMO_ACCOUNTS=true) --}}
+            @if($demoAccounts->isNotEmpty())
+                <details class="mt-5 rounded-2xl bg-[#4C2500]/6 border border-[#4C2500]/15 px-4 py-3 text-xs">
+                    <summary class="cursor-pointer font-bold text-[#4C2500] select-none">
+                        Daftar Akun Demo (Admin / Dosen / Mahasiswa / Mitra)
+                    </summary>
+                    <div class="mt-3 space-y-2 border-t border-[#4C2500]/15 pt-3">
+                        <p class="text-[11px] text-[#4C2500]/80">Sandi standar: <code class="font-mono font-bold">password123</code></p>
+                        @foreach($demoAccounts as $acc)
+                            <div class="flex items-center justify-between gap-2 rounded-xl bg-[#FDF6DC] px-3 py-2 border border-[#4C2500]/15">
+                                <div class="min-w-0">
+                                    <span class="text-[10px] font-extrabold uppercase text-[#CD7000]">{{ $acc->primaryRole() }}</span>
+                                    <p class="font-mono text-[11px] text-[#4C2500] truncate">{{ $acc->email }}</p>
+                                </div>
+                                <button type="button"
+                                        onclick="document.getElementById('email').value='{{ $acc->email }}'; document.getElementById('password').value='password123';"
+                                        class="shrink-0 rounded-lg bg-[#4C2500] hover:bg-[#CD7000] text-[#F9E7A9] px-2.5 py-1 text-[10px] font-bold cursor-pointer">
+                                    Isi Form
+                                </button>
                             </div>
-                            <button type="button"
-                                    onclick="document.getElementById('email').value='{{ $acc->email }}'; document.getElementById('password').value='password123';"
-                                    class="shrink-0 rounded-lg bg-[#4C2500] hover:bg-[#CD7000] text-[#F9E7A9] px-2.5 py-1 text-[10px] font-bold cursor-pointer">
-                                Isi Form
-                            </button>
-                        </div>
-                    @endforeach
-                </div>
-            </details>
+                        @endforeach
+                    </div>
+                </details>
+            @endif
         </div>
     </div>
 @endsection

@@ -28,7 +28,7 @@ class AuthController extends Controller
 
     public function showLogin(): View
     {
-        $demoAccounts = app()->isLocal()
+        $demoAccounts = (app()->isLocal() || config('app.show_demo_accounts'))
             ? User::with(['roles', 'studentProfile'])
                 ->whereIn('email', [
                     'admin.kemahasiswaan@campus.ac.id',
