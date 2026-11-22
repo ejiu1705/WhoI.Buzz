@@ -33,11 +33,13 @@ class CredentialHubTest extends TestCase
             ->assertSee('images/whoibuzz-logo.png')
             ->assertSee('Masuk ke Akun')
             ->assertSee('Registrasi Akun Baru')
+            ->assertDontSee('/api-client')
+            ->assertDontSee('/admin/api-console')
             ->assertHeader('X-Frame-Options', 'SAMEORIGIN')
             ->assertHeader('X-Content-Type-Options', 'nosniff');
 
         $this->get('/login')->assertOk()->assertSee('Masuk ke WhoI.Buzz');
-        $this->get('/register')->assertOk()->assertSee('Registrasi Akun WhoI.Buzz');
+        $this->get('/register')->assertOk()->assertSee('Daftar Akun WhoI.Buzz');
     }
 
     public function test_registration_creates_account_assigns_role_and_redirects_to_role_dashboard(): void
@@ -102,16 +104,23 @@ class CredentialHubTest extends TestCase
 
         $this->actingAs($mhs)
             ->post('/logout', ['revoke_api_tokens' => 1])
-            ->assertRedirect('/login');
+            ->assertRedirect('/');
 
         $this->assertGuest();
+
+        // Ensure unauthenticated demo-switch route is permanently removed
+        $this->post('/demo-switch', ['email' => 'admin.kemahasiswaan@campus.ac.id'])->assertNotFound();
+
+        // Ensure sensitive API console is strictly Admin-only and never exposed to guests or non-admins
+        $this->get('/admin/api-console')->assertRedirect('/login');
+        $this->actingAs($mhs)->get('/admin/api-console')->assertForbidden();
     }
 
     public function test_account_info_self_crud_and_admin_user_crud(): void
     {
         // Self Info Akun Update
         $mhs = User::where('email', 'bima.santoso@campus.ac.id')->firstOrFail();
-        $this->actingAs($mhs)->get('/akun')->assertOk()->assertSee('Ubah Informasi Akun');
+        $this->actingAs($mhs)->get('/akun')->assertOk()->assertSee('Pengaturan Profil Akun');
 
         $this->actingAs($mhs)->put('/akun', [
             'name' => 'Bima Santoso Updated',
@@ -250,8 +259,15 @@ class CredentialHubTest extends TestCase
             ->post('/mahasiswa/activities', [...$payload, 'certificate_file' => UploadedFile::fake()->createWithContent('c2.png', $pngBytes)])
             ->assertSessionHasErrors('certificate_file');
 
-        // SIAKAD JSON:API 1.1
-        $this->get('/api/v1/siakad/students')
+        // SIAKAD JSON:API 1.1 is strictly Admin-only via Sanctum Bearer Token
+        $this->actingAs($student)->getJson('/api/v1/siakad/students')->assertForbidden();
+        auth('web')->logout();
+        auth()->forgetGuards();
+        $this->getJson('/api/v1/siakad/students')->assertUnauthorized();
+        $admin = User::where('email', 'admin.kemahasiswaan@campus.ac.id')->firstOrFail();
+        $adminToken = $admin->createToken('postman-test')->plainTextToken;
+        $this->withHeader('Authorization', "Bearer {$adminToken}")
+            ->getJson('/api/v1/siakad/students')
             ->assertOk()
             ->assertHeader('Content-Type', 'application/vnd.api+json');
 

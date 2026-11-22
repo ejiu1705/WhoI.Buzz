@@ -6,11 +6,11 @@
     <section class="espresso-card rounded-[28px] p-6 sm:p-8 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <span class="inline-block px-3 py-0.5 rounded-full bg-[#F2AA00] text-[#4C2500] text-[11px] font-extrabold">
-                Multiple Role Route: admin | dosen • Permission: lihat progres
+                Pemantauan Akademik
             </span>
             <h1 class="mt-2 text-2xl font-extrabold text-[#FDF6DC]">Laporan Progres Poin SKPI Mahasiswa</h1>
-            <p class="text-xs text-[#F9E7A9]/80 mt-0.5">
-                Halaman ini hanya dapat diakses oleh role <strong>Admin</strong> atau <strong>Dosen</strong> (Mahasiswa & Mitra otomatis ditolak HTTP 403 Forbidden).
+            <p class="text-xs text-[#F9E7A9]/90 mt-0.5">
+                Rekapitulasi capaian poin SKPI, jumlah kegiatan yang menunggu validasi, serta kesiapan yudisium mahasiswa.
             </p>
         </div>
         <a href="{{ $viewer->dashboardRoute() }}" class="rounded-xl bg-[#F2AA00] text-[#4C2500] px-4 py-2.5 text-xs font-extrabold shrink-0">← Dashboard</a>
@@ -53,14 +53,14 @@
                                     <span class="font-mono font-extrabold">{{ $row['approved_points'] }}/100</span>
                                 </div>
                             </td>
-                            <td class="py-3">
+                            <td class="py-3 whitespace-nowrap">
                                 @if($row['ready_skpi'])
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-800 text-emerald-100 text-[10px] font-extrabold">
+                                    <span class="inline-flex items-center gap-1 whitespace-nowrap leading-none px-2.5 py-1 rounded-full bg-emerald-800 text-emerald-100 text-[10px] font-extrabold">
                                         <x-icon name="check" class="w-3 h-3" />
                                         <span>SIAP SKPI</span>
                                     </span>
                                 @else
-                                    <span class="px-2.5 py-0.5 rounded-full bg-[#F9E7A9] text-[#4C2500] text-[10px] font-bold">PROGRES</span>
+                                    <span class="inline-flex items-center whitespace-nowrap leading-none px-2.5 py-1 rounded-full bg-[#F9E7A9] text-[#4C2500] text-[10px] font-bold">PROGRES</span>
                                 @endif
                             </td>
                         </tr>

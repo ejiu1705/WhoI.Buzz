@@ -26,6 +26,22 @@ class StudentDashboardController extends Controller
         $student = $request->user()->load('studentProfile.advisor');
         $profile = $student->studentProfile;
 
+        if (! $profile) {
+            $defaultAdvisor = \App\Models\User::role('dosen')->first();
+            $profile = \App\Models\StudentProfile::create([
+                'user_id' => $student->id,
+                'nim' => 'TMP-'.strtoupper(Str::random(8)),
+                'prodi_name' => 'Sistem Informasi',
+                'faculty_name' => 'Fakultas Ilmu Komputer',
+                'semester' => 1,
+                'advisor_id' => $defaultAdvisor?->id,
+                'public_slug' => (Str::slug($student->name) ?: 'mahasiswa').'-'.strtolower(Str::random(4)),
+                'is_public_enabled' => false,
+                'skills_json' => [],
+                'yudisium_status' => 'active',
+            ])->load('advisor');
+        }
+
         $activities = Activity::where('student_id', $student->id)
             ->with(['category', 'file', 'validations.reviewer', 'credential'])
             ->latest()

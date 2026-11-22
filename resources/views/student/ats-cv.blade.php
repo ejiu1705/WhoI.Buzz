@@ -73,8 +73,8 @@
             </div>
         </section>
 
-        <footer class="mt-8 pt-4 border-t border-neutral-200 flex items-center justify-between text-[10px] text-neutral-500">
-            <span>Generated automatically from WhoI.Buzz Single Source of Truth (Campus Verified Credential Hub)</span>
+        <footer class="mt-8 pt-4 border-t border-neutral-300 flex items-center justify-between text-[10px] text-neutral-700">
+            <span>Dokumen dihasilkan otomatis dari portal resmi WhoI.Buzz (Campus Verified Credential Hub)</span>
             @if($latestSkpi)
                 <span class="font-mono font-bold text-[#4C2500]">SKPI Seal: {{ $latestSkpi->registration_number }}</span>
             @endif

@@ -20,14 +20,16 @@ class AuthController extends Controller
 {
     public function showLogin(): View
     {
-        $demoAccounts = User::with(['roles', 'studentProfile'])
-            ->whereIn('email', [
-                'admin.kemahasiswaan@campus.ac.id',
-                'dr.hendrawan@campus.ac.id',
-                'nadia.putri@campus.ac.id',
-                'hrd.mitra@techcorp.id',
-            ])
-            ->get();
+        $demoAccounts = app()->isLocal()
+            ? User::with(['roles', 'studentProfile'])
+                ->whereIn('email', [
+                    'admin.kemahasiswaan@campus.ac.id',
+                    'dr.hendrawan@campus.ac.id',
+                    'nadia.putri@campus.ac.id',
+                    'hrd.mitra@techcorp.id',
+                ])
+                ->get()
+            : collect();
 
         return view('auth.login', compact('demoAccounts'));
     }
@@ -41,7 +43,7 @@ class AuthController extends Controller
         $audit->log('auth.login', $user, ['method' => 'session_guard', 'role' => $user->primaryRole()], $user);
 
         return redirect()->intended($user->dashboardRoute())
-            ->with('success', "Selamat datang, {$user->name}! Anda masuk sebagai {$user->roleLabel()}.");
+            ->with('success', "Selamat datang, {$user->name}. Anda masuk sebagai {$user->roleLabel()}.");
     }
 
     public function showRegister(): View
@@ -80,9 +82,9 @@ class AuthController extends Controller
                     'semester' => (int) ($data['semester'] ?? 1),
                     'advisor_id' => $defaultAdvisor?->id,
                     'public_slug' => $slug,
-                    'is_public_enabled' => false, // UU PDP Privacy-by-Default
-                    'headline' => "Mahasiswa {$data['prodi_name']} — WhoI.Buzz Verified",
-                    'bio' => 'Akun baru terdaftar pada Campus Verified Credential & E-Portfolio Hub.',
+                    'is_public_enabled' => false,
+                    'headline' => "Mahasiswa {$data['prodi_name']}",
+                    'bio' => 'Profil mahasiswa terdaftar di portal WhoI.Buzz.',
                     'skills_json' => [],
                     'yudisium_status' => 'active',
                 ]);
@@ -100,12 +102,9 @@ class AuthController extends Controller
         $audit->log('auth.registered', $user, ['role' => $user->primaryRole()], $user);
 
         return redirect($user->dashboardRoute())
-            ->with('success', "Registrasi berhasil! Selamat datang di WhoI.Buzz, {$user->name} ({$user->roleLabel()}).");
+            ->with('success', "Pendaftaran berhasil. Selamat datang di WhoI.Buzz, {$user->name}.");
     }
 
-    /**
-     * Dedicated Logout Verification / Confirmation Screen (Verifikasi Logout).
-     */
     public function confirmLogout(Request $request): View
     {
         $user = $request->user()->load('roles');
@@ -130,26 +129,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')
-            ->with('success', 'Verifikasi logout berhasil. Sesi Anda telah ditutup dengan aman.');
-    }
-
-    /**
-     * Quick Demo SSO switch across seeded roles.
-     */
-    public function demoSwitch(Request $request, AuditService $audit): RedirectResponse
-    {
-        $data = $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
-        ]);
-
-        $user = User::with('roles')->where('email', $data['email'])->firstOrFail();
-        Auth::login($user, true);
-        $request->session()->regenerate();
-
-        $audit->log('auth.sso_demo_switch', $user, ['role' => $user->primaryRole()], $user);
-
-        return redirect($user->dashboardRoute())
-            ->with('success', "Masuk sebagai {$user->name} ({$user->roleLabel()}).");
+        return redirect()->route('home')
+            ->with('success', 'Anda telah berhasil keluar dari sesi.');
     }
 }

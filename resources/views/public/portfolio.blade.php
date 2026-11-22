@@ -84,7 +84,7 @@
                         <p class="mt-1.5 text-xs text-[#4C2500]/80">
                             <strong>{{ $act->organizer }}</strong> — {{ $act->role_in_activity }} ({{ $act->category?->competency_domain }})
                         </p>
-                        <p class="mt-1.5 text-[11px] text-[#4C2500]/65">{{ $act->trustTierMeta()['description'] }}</p>
+                        <p class="mt-1.5 text-[11px] text-[#4C2500]/80">{{ $act->trustTierMeta()['description'] }}</p>
 
                         <div class="mt-3 pt-3 border-t border-[#4C2500]/10 flex flex-wrap items-center gap-2">
                             @if($act->credential)

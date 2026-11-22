@@ -204,12 +204,12 @@
                 </thead>
                 <tbody class="divide-y divide-[#4C2500]/10">
                     @foreach($recentDecisions as $dec)
-                        <tr>
-                            <td class="py-2.5 pr-3 font-mono text-[11px]">{{ $dec->reviewed_at?->format('d M H:i') }}</td>
-                            <td class="py-2.5 pr-3 font-bold">{{ $dec->activity?->student?->name }}</td>
+                        <tr class="align-middle">
+                            <td class="py-2.5 pr-3 font-mono text-[11px] whitespace-nowrap">{{ $dec->reviewed_at?->format('d M H:i') }}</td>
+                            <td class="py-2.5 pr-3 font-bold whitespace-nowrap">{{ $dec->activity?->student?->name }}</td>
                             <td class="py-2.5 pr-3">{{ $dec->activity?->title_id }}</td>
-                            <td class="py-2.5 pr-3">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase {{ $dec->decision === 'approved' ? 'bg-emerald-800 text-emerald-100' : 'bg-red-800 text-white' }}">
+                            <td class="py-2.5 pr-3 whitespace-nowrap">
+                                <span class="inline-flex items-center whitespace-nowrap leading-none px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase {{ $dec->decision === 'approved' ? 'bg-emerald-800 text-emerald-100' : 'bg-red-800 text-white' }}">
                                     {{ $dec->decision }}
                                 </span>
                             </td>

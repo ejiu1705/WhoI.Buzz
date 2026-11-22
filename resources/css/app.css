@@ -36,30 +36,115 @@
     }
 }
 
-/* Signature Shrink-on-Scroll Floating Pill Navbar (Backdrop Blur + Dynamic Horizontal Expansion) */
+/* ==========================================================================
+   1. ELEGANT KEYFRAMES
+   ========================================================================== */
+@keyframes orbHalo {
+    0%, 100% {
+        box-shadow:
+            0 12px 28px -6px rgba(76, 37, 0, 0.52),
+            0 0 0 1px rgba(242, 170, 0, 0.55),
+            0 0 0 0 rgba(242, 170, 0, 0.32);
+    }
+    50% {
+        box-shadow:
+            0 16px 34px -6px rgba(76, 37, 0, 0.58),
+            0 0 0 1px rgba(242, 170, 0, 0.85),
+            0 0 0 7px rgba(242, 170, 0, 0);
+    }
+}
+
+@keyframes floatSlow {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(12px, -14px, 0) scale(1.05);
+    }
+}
+
+@keyframes floatSlowReverse {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+        transform: translate3d(-12px, 12px, 0) scale(1.06);
+    }
+}
+
+@keyframes pillEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes shimmerSweep {
+    0% {
+        transform: translateX(-140%) skewX(-20deg);
+    }
+    100% {
+        transform: translateX(260%) skewX(-20deg);
+    }
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.988);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==========================================================================
+   2. EXPANDABLE FLOATING PILL NAVBAR (SPRING MORPH + STAGGERED GLIDE)
+   ========================================================================== */
 .floating-pill-shell {
+    animation: pillEntrance 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
     transition:
-        padding 420ms cubic-bezier(0.22, 1, 0.36, 1),
-        gap 420ms cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 380ms ease,
+        padding 460ms cubic-bezier(0.16, 1, 0.3, 1),
+        gap 460ms cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 420ms ease,
         border-color 320ms ease,
-        transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+        transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
     border-radius: 9999px;
     padding: 0.45rem 0.75rem 0.45rem 0.5rem;
+    box-shadow:
+        0 20px 44px -12px rgba(76, 37, 0, 0.55),
+        0 0 0 1px rgba(242, 170, 0, 0.55),
+        inset 0 1px 0 rgba(249, 231, 169, 0.22);
 }
 
 .floating-pill-shell.is-shrunk {
     padding: 0.35rem;
-    box-shadow:
-        0 14px 32px -6px rgba(76, 37, 0, 0.55),
-        0 0 0 1px rgba(242, 170, 0, 0.55);
+    animation: pillEntrance 620ms cubic-bezier(0.16, 1, 0.3, 1) both, orbHalo 3.2s ease-in-out 0.7s infinite;
 }
 
 .floating-pill-shell.is-shrunk:hover {
-    transform: scale(1.03);
+    transform: translateY(-1px) scale(1.04);
 }
 
-/* Brand wordmark + navigation items collapse smoothly into the center icon on scroll */
+.pill-orb-btn {
+    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 320ms ease;
+}
+
+.floating-pill-shell:not(.is-shrunk) .pill-orb-btn {
+    transform: rotate(-6deg) scale(0.98);
+    box-shadow: 0 0 0 2px rgba(242, 170, 0, 0.35);
+}
+
+.pill-orb-btn:hover {
+    transform: rotate(0deg) scale(1.06);
+}
+
+/* Smooth horizontal expansion */
 .pill-expandable {
     display: flex;
     align-items: center;
@@ -70,52 +155,100 @@
     margin-left: 0.65rem;
     transform: translateX(0) scale(1);
     transition:
-        max-width 480ms cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 260ms ease 80ms,
-        margin-left 420ms cubic-bezier(0.22, 1, 0.36, 1),
-        transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+        max-width 540ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 300ms ease 90ms,
+        margin-left 460ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 460ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .floating-pill-shell.is-shrunk .pill-expandable {
     max-width: 0;
     opacity: 0;
     margin-left: 0;
-    transform: translateX(-8px) scale(0.95);
+    transform: translateX(-10px) scale(0.95);
     pointer-events: none;
     transition:
         max-width 420ms cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 160ms ease,
+        opacity 150ms ease,
         margin-left 380ms cubic-bezier(0.22, 1, 0.36, 1),
-        transform 320ms ease;
+        transform 300ms ease;
 }
 
-/* Mobile dropdown drawer for small screens */
+/* Staggered silk glide for nav links inside expanded pill */
+.pill-expandable a {
+    transition:
+        background-color 220ms ease,
+        color 220ms ease,
+        transform 360ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 320ms ease;
+}
+
+.floating-pill-shell.is-shrunk .pill-expandable a {
+    opacity: 0;
+    transform: translateY(4px);
+}
+
+.floating-pill-shell:not(.is-shrunk) .pill-expandable a {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.floating-pill-shell:not(.is-shrunk) .pill-expandable a:nth-child(1) { transition-delay: 60ms; }
+.floating-pill-shell:not(.is-shrunk) .pill-expandable a:nth-child(2) { transition-delay: 95ms; }
+.floating-pill-shell:not(.is-shrunk) .pill-expandable a:nth-child(3) { transition-delay: 130ms; }
+.floating-pill-shell:not(.is-shrunk) .pill-expandable a:nth-child(4) { transition-delay: 165ms; }
+.floating-pill-shell:not(.is-shrunk) .pill-expandable a:nth-child(5) { transition-delay: 200ms; }
+.floating-pill-shell:not(.is-shrunk) .pill-expandable a:nth-child(6) { transition-delay: 235ms; }
+
+/* Mobile dropdown drawer */
 .pill-mobile-menu {
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
+    transform: translateY(-6px);
     transition:
-        grid-template-rows 340ms cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 240ms ease;
+        grid-template-rows 360ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 240ms ease,
+        transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pill-mobile-menu.is-open {
     grid-template-rows: 1fr;
     opacity: 1;
+    transform: translateY(0);
 }
 
-/* Honey Glass Cards */
+/* ==========================================================================
+   3. HONEY-GLASS SURFACES, SCROLL REVEALS & TACTILE MICRO-INTERACTIONS
+   ========================================================================== */
 .honey-card {
     background: rgba(253, 246, 220, 0.88);
     border: 1px solid rgba(76, 37, 0, 0.14);
     box-shadow: 0 14px 36px -18px rgba(76, 37, 0, 0.22);
     backdrop-filter: blur(10px);
+    transition:
+        transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 340ms ease,
+        border-color 280ms ease;
+}
+
+.honey-card:hover {
+    border-color: rgba(205, 112, 0, 0.36);
+    box-shadow: 0 22px 44px -18px rgba(76, 37, 0, 0.28);
 }
 
 .honey-card-strong {
     background: linear-gradient(145deg, #FDF6DC 0%, #F9E7A9 100%);
     border: 1px solid rgba(205, 112, 0, 0.28);
     box-shadow: 0 18px 42px -18px rgba(76, 37, 0, 0.24);
+    transition:
+        transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 340ms ease,
+        border-color 280ms ease;
+}
+
+.honey-card-strong:hover {
+    box-shadow: 0 24px 48px -18px rgba(76, 37, 0, 0.3);
 }
 
 .espresso-card {
@@ -125,11 +258,76 @@
     box-shadow: 0 20px 44px -16px rgba(51, 24, 0, 0.5);
 }
 
+/* Subtle ambient drifting blobs */
+.ambient-orb {
+    animation: floatSlow 9s ease-in-out infinite;
+    will-change: transform;
+}
+
+.ambient-orb-reverse {
+    animation: floatSlowReverse 11s ease-in-out infinite;
+    will-change: transform;
+}
+
+/* Refined shimmer sweep for primary gold CTA buttons */
+.btn-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 45%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    transform: translateX(-160%) skewX(-20deg);
+    pointer-events: none;
+}
+
+.btn-shimmer:hover::after {
+    animation: shimmerSweep 780ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Scroll-triggered graceful reveal */
+.reveal-ready {
+    opacity: 0;
+    transform: translateY(18px) scale(0.988);
+    transition:
+        opacity 640ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 680ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-ready.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Tactile press feedback on all buttons & interactive pills */
+button:not(:disabled):active,
+a[class*="rounded-"]:active {
+    transform: scale(0.98);
+}
+
 /* Subtle Honeycomb Grid Pattern */
 .honeycomb-bg {
-    background-image:
-        radial-gradient(rgba(76, 37, 0, 0.07) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(76, 37, 0, 0.07) 1px, transparent 1px);
     background-size: 22px 22px;
+}
+
+/* Accessibility: respect user reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .reveal-ready {
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }
 
 @media print {

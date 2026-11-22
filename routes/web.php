@@ -14,11 +14,11 @@ use App\Http\Controllers\StudentDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Halaman Utama Publik: Dashboard Tentang WhoI.Buzz (pilihan Login & Registrasi sebelum masuk)
+// Halaman Utama Publik: Beranda Tentang WhoI.Buzz (pilihan Login & Registrasi sebelum masuk)
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::redirect('/beranda', '/');
 
-// Guest-Only Authentication Routes (Modul 5: middleware guest)
+// Autentikasi Khusus Tamu (Guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login-attempt')->name('login.post');
@@ -26,10 +26,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
 
-// Quick Demo SSO Role Switcher (optional testing shortcut)
-Route::post('/demo-switch', [AuthController::class, 'demoSwitch'])->name('demo.switch');
-
-// Public QR Verification, Opt-In Portfolio & Talent Pool (for HRD / external verification links)
+// Verifikasi Kredensial QR, Portofolio Publik Opt-In, & Talent Pool
 Route::middleware('throttle:verify-public')->group(function () {
     Route::get('/verify', [PublicHubController::class, 'verifyIndex'])->name('verify.index');
     Route::get('/verify/{registrationNumber}', [PublicHubController::class, 'verifyShow'])->name('verify.show');
@@ -41,33 +38,31 @@ Route::get('/@{slug}', [PublicHubController::class, 'portfolio'])
     ->name('portfolio.show');
 
 Route::get('/talent-pool', [PublicHubController::class, 'talentPool'])->name('talent.index');
-Route::view('/api-client', 'api-client.index')->name('api.client');
 
-// Authenticated Routes (All Logged-In Users)
+// Rute Terautentikasi (Semua Role Aktif)
 Route::middleware('auth')->group(function () {
-    // Central Dashboard Dispatcher -> directs each role to its own exclusive dashboard
     Route::get('/dashboard', fn () => redirect(Auth::user()->dashboardRoute()))->name('dashboard');
 
-    // Verifikasi Logout & Logout Execution
+    // Verifikasi Logout & Logout
     Route::get('/logout/verify', [AuthController::class, 'confirmLogout'])->name('logout.confirm');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Info Akun & Self-Service CRUD (Read, Update, Password, API Token, Delete Account)
+    // Pengelolaan Info Akun Mandiri
     Route::prefix('akun')->name('account.')->group(function () {
         Route::get('/', [AccountController::class, 'show'])->name('show');
         Route::put('/', [AccountController::class, 'update'])->name('update');
         Route::put('/password', [AccountController::class, 'updatePassword'])->name('password');
-        Route::post('/tokens', [AccountController::class, 'createApiToken'])->name('tokens.store');
-        Route::delete('/tokens/{tokenId}', [AccountController::class, 'revokeApiToken'])->name('tokens.destroy');
+        Route::post('/tokens', [AccountController::class, 'createApiToken'])->middleware('role:admin')->name('tokens.store');
+        Route::delete('/tokens/{tokenId}', [AccountController::class, 'revokeApiToken'])->middleware('role:admin')->name('tokens.destroy');
         Route::delete('/', [AccountController::class, 'destroy'])->name('destroy');
     });
 
-    // Zero-Trust Private Vault Preview (Temporary Signed URL + Policy)
+    // Pratinjau Berkas Privat (Signed URL 5 Menit + Policy)
     Route::get('/vault/preview/{activityFile}', [PublicHubController::class, 'vaultPreview'])
         ->middleware('signed')
         ->name('vault.preview');
 
-    // Modul 3 & 6: Resource CRUD Kurikulum SKPI (create/store gated by can:kelola-kurikulum-skpi; registered first before {kurikulum_skpi})
+    // Pengelolaan Kurikulum SKPI
     Route::resource('kurikulum-skpi', SkpiCategoryController::class)
         ->only(['create', 'store'])
         ->middleware('can:kelola-kurikulum-skpi');
@@ -75,7 +70,7 @@ Route::middleware('auth')->group(function () {
         ->except(['create', 'store']);
 });
 
-// 1. DASHBOARD & FITUR KHUSUS MAHASISWA (role:mahasiswa)
+// 1. Dashboard & Fitur Khusus Mahasiswa
 Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
     Route::post('/ai-parse', [StudentDashboardController::class, 'aiParse'])->middleware('throttle:certificate-upload')->name('ai-parse');
@@ -88,30 +83,33 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::post('/notifications/read', [StudentDashboardController::class, 'markNotificationsRead'])->name('notifications.read');
 });
 
-// 2. DASHBOARD & FITUR KHUSUS DOSEN PA / VERIFIKATOR (role:dosen|admin)
+// 2. Dashboard & Fitur Khusus Dosen PA
 Route::middleware(['auth', 'role:dosen|admin'])->prefix('dosen')->name('dosen.')->group(function () {
     Route::get('/dashboard', [ReviewerController::class, 'index'])->name('dashboard');
     Route::post('/activities/{activity}/decide', [ReviewerController::class, 'decide'])->name('decide');
     Route::post('/bulk-approve', [ReviewerController::class, 'bulkApprove'])->name('bulk-approve');
 });
 
-// Modul 5 Multiple Role Route (Admin ATAU Dosen)
+// Laporan Progres SKPI (Khusus Admin & Dosen PA)
 Route::middleware(['auth', 'role:admin|dosen', 'can:lihat-progres'])
     ->get('/laporan-progres', [ProgressReportController::class, 'index'])
     ->name('laporan.progres');
 
-// 3. DASHBOARD & FITUR KHUSUS ADMIN KEMAHASISWAAN (role:admin)
+// 3. Dashboard & Fitur Khusus Admin Kemahasiswaan
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminHubController::class, 'index'])->name('dashboard');
-    Route::post('/auto-claim', [AdminHubController::class, 'autoClaimBatch'])->name('auto-claim');
-    Route::post('/categories', [AdminHubController::class, 'storeCategory'])->name('categories.store');
-    Route::post('/credentials/{credential}/revoke', [AdminHubController::class, 'revokeCredential'])->name('credentials.revoke');
+    Route::post('/auto-claim', [AdminHubController::class, 'autoClaimBatch'])
+        ->middleware('permission:terbitkan-autoclaim')
+        ->name('auto-claim');
+    Route::post('/credentials/{credential}/revoke', [AdminHubController::class, 'revokeCredential'])
+        ->middleware('permission:cabut-kredensial')
+        ->name('credentials.revoke');
+    Route::view('/api-console', 'api-client.index')->name('api.console');
 
-    // Admin CRUD Manajemen Akun & Role (7-Method Resource Controller)
     Route::resource('users', AdminUserController::class)->middleware('can:kelola-pengguna');
 });
 
-// 4. DASHBOARD & FITUR KHUSUS MITRA KARIER / HRD (role:mitra|admin)
+// 4. Dashboard & Fitur Khusus Mitra Karier / HRD
 Route::middleware(['auth', 'role:mitra|admin'])->prefix('mitra')->name('mitra.')->group(function () {
     Route::get('/dashboard', [MitraDashboardController::class, 'index'])->name('dashboard');
 });

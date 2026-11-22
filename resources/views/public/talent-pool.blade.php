@@ -6,11 +6,11 @@
     <section class="espresso-card rounded-[28px] p-7 sm:p-9 mb-7">
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F2AA00] text-[#4C2500] text-[11px] font-extrabold">
             <x-icon name="sparkles" class="w-3.5 h-3.5" />
-            <span>Semantic Talent Matching (pgvector Cosine Similarity)</span>
+            <span>Pencarian Talenta Berbasis Kompetensi</span>
         </span>
-        <h1 class="mt-2.5 text-2xl sm:text-3xl font-extrabold text-[#FDF6DC]">Cari Talenta Kampus Secara Semantik</h1>
-        <p class="text-xs sm:text-sm text-[#F9E7A9]/80 mt-1 max-w-3xl">
-            Bukan sekadar pencarian kata kunci kaku—ketik deskripsi kebutuhan kandidat dalam bahasa natural. Sistem hanya menampilkan mahasiswa yang secara sadar mengaktifkan <em>Public Opt-In</em> (UU PDP).
+        <h1 class="mt-2.5 text-2xl sm:text-3xl font-extrabold text-[#FDF6DC]">Direktori Talenta Mahasiswa</h1>
+        <p class="text-xs sm:text-sm text-[#F9E7A9]/90 mt-1 max-w-3xl">
+            Temukan mahasiswa sesuai bidang keahlian dan rekam jejak prestasi tervalidasi. Hanya mahasiswa yang mengaktifkan profil publik secara sadar yang tampil di direktori ini.
         </p>
 
         <form method="GET" action="{{ route('talent.index') }}" class="mt-5 grid grid-cols-1 md:grid-cols-12 gap-2.5">
@@ -67,7 +67,7 @@
 
                     @if(!empty($row['matched_concepts']))
                         <div class="mt-3 flex flex-wrap items-center gap-1.5">
-                            <span class="text-[10px] font-extrabold uppercase text-[#4C2500]/60">Dimensi Vektor Cocok:</span>
+                            <span class="text-[10px] font-extrabold uppercase text-[#4C2500]/80">Bidang Cocok:</span>
                             @foreach($row['matched_concepts'] as $concept)
                                 <span class="px-2 py-0.5 rounded-full bg-[#F2AA00]/30 text-[#4C2500] text-[10px] font-extrabold font-mono">{{ $concept }}</span>
                             @endforeach

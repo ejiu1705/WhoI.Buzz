@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'CRUD Manajemen Akun & Role — WhoI.Buzz Admin')
+@section('title', 'Kelola Pengguna — WhoI.Buzz Admin')
 
 @section('content')
     <section class="espresso-card rounded-[28px] p-6 sm:p-7 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <span class="inline-block px-3 py-0.5 rounded-full bg-[#F2AA00] text-[#4C2500] text-[11px] font-extrabold">
-                RBAC Permission: kelola pengguna
+                Administrasi Akun
             </span>
-            <h1 class="mt-2 text-2xl font-extrabold text-[#FDF6DC]">Manajemen Akun Pengguna (CRUD Terpusat)</h1>
-            <p class="text-xs text-[#F9E7A9]/80 mt-0.5">Kelola akun Admin, Dosen PA, Mahasiswa, dan Mitra beserta role Spatie langsung di database MySQL.</p>
+            <h1 class="mt-2 text-2xl font-extrabold text-[#FDF6DC]">Manajemen Akun Pengguna</h1>
+            <p class="text-xs text-[#F9E7A9]/90 mt-0.5">Kelola data akun Admin, Dosen PA, Mahasiswa, dan Mitra Karier beserta peran aksesnya.</p>
         </div>
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('admin.dashboard') }}" class="rounded-xl bg-[#FDF6DC]/15 text-[#FDF6DC] px-4 py-2.5 text-xs font-bold">← Dashboard Admin</a>
@@ -58,8 +58,8 @@
                                 <p class="font-extrabold text-[#4C2500]">{{ $u->name }}</p>
                                 <p class="font-mono text-[11px] text-[#4C2500]/70">{{ $u->email }}</p>
                             </td>
-                            <td class="py-3 pr-3">
-                                <span class="px-2.5 py-0.5 rounded-full bg-[#4C2500] text-[#F2AA00] text-[10px] font-extrabold uppercase">
+                            <td class="py-3 pr-3 whitespace-nowrap">
+                                <span class="inline-flex items-center whitespace-nowrap leading-none px-2.5 py-1 rounded-full bg-[#4C2500] text-[#F2AA00] text-[10px] font-extrabold uppercase">
                                     {{ $u->primaryRole() }}
                                 </span>
                             </td>
@@ -68,7 +68,7 @@
                                     <span class="font-mono font-bold">{{ $u->studentProfile->nim }}</span>
                                     <span class="block text-[#4C2500]/70">{{ $u->studentProfile->prodi_name }} (Smt {{ $u->studentProfile->semester }})</span>
                                 @else
-                                    <span class="text-[#4C2500]/50">—</span>
+                                    <span class="text-[#4C2500]/75">—</span>
                                 @endif
                             </td>
                             <td class="py-3 pr-3 text-center font-mono font-bold">{{ $u->activities_count }}</td>
@@ -87,7 +87,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="py-8 text-center text-[#4C2500]/65">Belum ada akun yang cocok dengan filter.</td></tr>
+                        <tr><td colspan="6" class="py-8 text-center text-[#4C2500]/80">Belum ada akun yang cocok dengan filter.</td></tr>
                     @endforelse
                 </tbody>
             </table>

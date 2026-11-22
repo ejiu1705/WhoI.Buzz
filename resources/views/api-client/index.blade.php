@@ -1,31 +1,31 @@
 @extends('layouts.app')
 
-@section('title', 'RESTful API Client (Sanctum Bearer Token) — WhoI.Buzz')
+@section('title', 'Konsol Integrasi API (Admin) — WhoI.Buzz')
 
 @section('content')
     <section class="espresso-card rounded-[28px] p-6 sm:p-8 mb-6">
         <span class="inline-block px-3 py-0.5 rounded-full bg-[#F2AA00] text-[#4C2500] text-[11px] font-extrabold">
-            Modul 4 • RESTful API v1 + Laravel Sanctum Bearer Token + Fetch API (async/await)
+            Akses Khusus Administrator
         </span>
-        <h1 class="mt-2 text-2xl font-extrabold text-[#FDF6DC]">Klien Konsumsi RESTful API Kurikulum SKPI</h1>
-        <p class="text-xs text-[#F9E7A9]/80 mt-1">
-            Seluruh data pada halaman ini diambil langsung dari <code class="font-mono text-[#F2AA00]">/api/v1/skpi-categories</code> via JavaScript <code>fetch()</code> dengan escaping XSS <code>esc()</code> dan autentikasi <code>Authorization: Bearer &lt;token&gt;</code>.
+        <h1 class="mt-2 text-2xl font-extrabold text-[#FDF6DC]">Konsol Pengujian Integrasi API</h1>
+        <p class="text-xs text-[#F9E7A9]/90 mt-1">
+            Utilitas internal administrator untuk menguji endpoint <code class="font-mono text-[#F2AA00]">/api/v1/skpi-categories</code> menggunakan autentikasi token.
         </p>
     </section>
 
     <div id="api-alert-area" class="mb-4"></div>
 
-    {{-- Sanctum Login / Token Status Box --}}
+    {{-- Autentikasi Token --}}
     <section class="honey-card-strong rounded-3xl p-5 mb-6">
         <div id="api-form-login" class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-            <input type="email" id="api-login-email" value="admin.kemahasiswaan@campus.ac.id" placeholder="Email akun (Admin/Dosen untuk tulis)"
-                   class="md:col-span-5 rounded-xl bg-[#FDF6DC] border border-[#4C2500]/25 px-3.5 py-2 text-xs">
-            <input type="password" id="api-login-password" value="password123" placeholder="Password"
-                   class="md:col-span-4 rounded-xl bg-[#FDF6DC] border border-[#4C2500]/25 px-3.5 py-2 text-xs">
+            <input type="email" id="api-login-email" value="" placeholder="Email akun administrator"
+                   class="md:col-span-5 rounded-xl bg-[#FDF6DC] border border-[#4C2500]/25 px-3.5 py-2 text-xs text-[#4C2500]">
+            <input type="password" id="api-login-password" value="" placeholder="Kata sandi"
+                   class="md:col-span-4 rounded-xl bg-[#FDF6DC] border border-[#4C2500]/25 px-3.5 py-2 text-xs text-[#4C2500]">
             <button type="button" id="api-btn-login"
                     class="md:col-span-3 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#4C2500] hover:bg-[#CD7000] text-[#F2AA00] hover:text-[#FDF6DC] py-2 text-xs font-extrabold cursor-pointer transition">
                 <x-icon name="key" class="w-3.5 h-3.5" />
-                <span>Login API (Bearer Token)</span>
+                <span>Masuk &amp; Ambil Token</span>
             </button>
             <p id="api-err-login" class="md:col-span-12 text-xs font-bold text-red-700"></p>
         </div>

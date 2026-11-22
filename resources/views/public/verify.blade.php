@@ -29,12 +29,12 @@
         {{-- Verification Result Card --}}
         @if($notFound)
             <div class="rounded-3xl border-2 border-red-800 bg-red-950 text-[#FDF6DC] p-7 mb-7">
-                <h2 class="inline-flex items-center gap-2 text-xl font-extrabold text-red-300">
+                <h2 class="inline-flex items-center gap-2 text-xl font-extrabold text-red-200">
                     <x-icon name="x-mark" class="w-5 h-5" />
                     <span>KREDENSIAL TIDAK DITEMUKAN</span>
                 </h2>
                 <p class="mt-2 text-xs text-red-100">
-                    Nomor registrasi <code class="font-mono font-bold">{{ $searchedCode }}</code> tidak tercatat pada Single Source of Truth WhoI.Buzz. Harap waspadai potensi pemalsuan dokumen.
+                    Nomor registrasi <code class="font-mono font-bold">{{ $searchedCode }}</code> tidak tercatat pada pangkalan data resmi WhoI.Buzz. Harap pastikan nomor sudah benar atau waspadai potensi pemalsuan dokumen.
                 </p>
             </div>
         @elseif($credential && $verification)
@@ -130,7 +130,7 @@
 
         {{-- Sample Credentials Directory for Quick Demo --}}
         <div class="honey-card rounded-3xl p-6">
-            <h2 class="text-sm font-extrabold text-[#4C2500] mb-3">Sampel Nomor Registrasi Kredensial Kampus (Klik untuk Uji)</h2>
+            <h2 class="text-sm font-extrabold text-[#4C2500] mb-3">Kredensial Terbaru yang Terbit</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 @foreach($recentCredentials as $rc)
                     <a href="{{ route('verify.show', $rc->registration_number) }}"

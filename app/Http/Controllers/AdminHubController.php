@@ -165,31 +165,6 @@ class AdminHubController extends Controller
         return back()->with('success', "Auto-Claim berhasil! {$issuedCount} sertifikat Tier 1 (Gold Badge) langsung diterbitkan & dikunci ke portofolio mahasiswa.");
     }
 
-    public function storeCategory(Request $request, AuditService $audit): RedirectResponse
-    {
-        $data = $request->validate([
-            'code' => ['required', 'string', 'max:32', 'unique:skpi_categories,code'],
-            'name_id' => ['required', 'string', 'max:160'],
-            'name_en' => ['required', 'string', 'max:160'],
-            'competency_domain' => ['required', 'in:Leadership,Technical,Communication,Social,Academic'],
-            'default_points' => ['required', 'integer', 'min:5', 'max:60'],
-            'level' => ['required', 'in:Lokal,Nasional,Internasional'],
-            'is_mandatory' => ['nullable', 'boolean'],
-        ]);
-
-        $cat = new SkpiCategory([
-            ...$data,
-            'curriculum_version' => '2026-V1',
-            'is_mandatory' => $request->boolean('is_mandatory'),
-        ]);
-        $cat->created_by = $request->user()->id;
-        $cat->save();
-
-        $audit->log('skpi_category.created', $cat, $data, $request->user());
-
-        return back()->with('success', "Kategori kurikulum SKPI \"{$cat->name_id}\" berhasil ditambahkan.");
-    }
-
     /**
      * Public Revocation Registry: immediately invalidates a credential & reflects on QR Verification page.
      */

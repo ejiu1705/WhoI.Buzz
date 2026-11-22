@@ -2,8 +2,46 @@ import './bootstrap';
 
 document.addEventListener('DOMContentLoaded', () => {
     initFloatingPillNavbar();
+    initElegantScrollReveals();
     initStudentWizard();
 });
+
+/**
+ * Graceful Scroll-Triggered Reveal (IntersectionObserver) with subtle stagger
+ */
+function initElegantScrollReveals() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const targets = document.querySelectorAll('main section, main .honey-card, main .honey-card-strong, main .espresso-card');
+    if (!targets.length || !('IntersectionObserver' in window)) return;
+
+    const seen = new WeakSet();
+    const observer = new IntersectionObserver((entries) => {
+        let batchIndex = 0;
+        entries.forEach((entry) => {
+            if (entry.isIntersecting && !seen.has(entry.target)) {
+                seen.add(entry.target);
+                const delay = Math.min(batchIndex * 65, 260);
+                entry.target.style.transitionDelay = `${delay}ms`;
+                entry.target.classList.add('is-visible');
+                batchIndex++;
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+
+    targets.forEach((el) => {
+        // Avoid double-wrapping nested cards inside already-observed sections
+        if (el.parentElement && el.parentElement.closest('.reveal-ready')) return;
+        const rect = el.getBoundingClientRect();
+        el.classList.add('reveal-ready');
+        if (rect.top < window.innerHeight * 0.92) {
+            requestAnimationFrame(() => el.classList.add('is-visible'));
+        } else {
+            observer.observe(el);
+        }
+    });
+}
 
 /**
  * Expandable Floating Pill Navbar (Icon Orb -> Dynamic Horizontal Expansion):

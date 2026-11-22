@@ -8,22 +8,22 @@
             <div>
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#F2AA00] text-[#4C2500] text-[11px] font-extrabold">
                     <x-icon name="building" class="w-3.5 h-3.5" />
-                    <span>Direktorat Kemahasiswaan • Zero-Trust Governance</span>
+                    <span>Direktorat Kemahasiswaan</span>
                 </span>
-                <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold text-[#FDF6DC]">Admin Hub, Auto-Claim &amp; Revocation Registry</h1>
-                <p class="text-xs text-[#F9E7A9]/80 mt-1">
-                    Terbitkan sertifikat internal kampus Tier 1 (Gold Badge) secara massal, kelola akun &amp; role, kurikulum SKPI, dan audit sistem.
+                <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold text-[#FDF6DC]">Dashboard Admin Kemahasiswaan</h1>
+                <p class="text-xs text-[#F9E7A9]/90 mt-1">
+                    Terbitkan sertifikat kegiatan internal kampus secara massal, kelola pengguna, kurikulum SKPI, dan riwayat pencabutan kredensial.
                 </p>
                 <div class="mt-3 flex flex-wrap gap-2">
                     @can('kelola pengguna')
                         <a href="{{ route('admin.users.index') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#F2AA00] hover:bg-[#CD7000] text-[#4C2500] hover:text-[#FDF6DC] px-4 py-2 text-xs font-extrabold transition">
                             <x-icon name="users" class="w-4 h-4" />
-                            <span>Kelola Akun Pengguna (CRUD)</span>
+                            <span>Kelola Pengguna</span>
                         </a>
                     @endcan
                     <a href="{{ route('kurikulum-skpi.index') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#FDF6DC]/15 hover:bg-[#F2AA00] text-[#FDF6DC] hover:text-[#4C2500] px-4 py-2 text-xs font-bold transition">
                         <x-icon name="book-open" class="w-4 h-4" />
-                        <span>CRUD Kurikulum SKPI</span>
+                        <span>Kurikulum SKPI</span>
                     </a>
                     <a href="{{ route('laporan.progres') }}" class="inline-flex items-center gap-1.5 rounded-xl bg-[#FDF6DC]/15 hover:bg-[#F2AA00] text-[#FDF6DC] hover:text-[#4C2500] px-4 py-2 text-xs font-bold transition">
                         <x-icon name="chart-bar" class="w-4 h-4" />
@@ -142,7 +142,7 @@
                 @endforeach
             </div>
 
-            <form method="POST" action="{{ route('admin.categories.store') }}" class="pt-3 border-t border-[#4C2500]/15 space-y-2.5">
+            <form method="POST" action="{{ route('kurikulum-skpi.store') }}" class="pt-3 border-t border-[#4C2500]/15 space-y-2.5">
                 @csrf
                 <p class="text-xs font-extrabold text-[#4C2500]">Tambah Kategori Kurikulum Baru</p>
                 <div class="grid grid-cols-2 gap-2">
@@ -191,22 +191,28 @@
                 </thead>
                 <tbody class="divide-y divide-[#4C2500]/10">
                     @foreach($credentials as $cred)
-                        <tr>
-                            <td class="py-3 pr-3 font-mono font-bold">
+                        <tr class="align-middle">
+                            <td class="py-3 pr-4 font-mono font-bold whitespace-nowrap">
                                 <a href="{{ route('verify.show', $cred->registration_number) }}" target="_blank" class="underline text-[#4C2500] hover:text-[#CD7000]">
                                     {{ $cred->registration_number }}
                                 </a>
                             </td>
-                            <td class="py-3 pr-3 font-semibold">{{ $cred->student?->name }}</td>
-                            <td class="py-3 pr-3">{{ $cred->title }}</td>
-                            <td class="py-3 pr-3">
+                            <td class="py-3 pr-4 font-semibold whitespace-nowrap">{{ $cred->student?->name }}</td>
+                            <td class="py-3 pr-4 min-w-[220px]">{{ $cred->title }}</td>
+                            <td class="py-3 pr-4 whitespace-nowrap">
                                 @if($cred->isRevoked())
-                                    <span class="px-2.5 py-0.5 rounded-full bg-red-800 text-white text-[10px] font-extrabold">DICABUT</span>
+                                    <span class="inline-flex items-center gap-1 whitespace-nowrap leading-none px-2.5 py-1 rounded-full bg-red-800 text-white text-[10px] font-extrabold">
+                                        <x-icon name="x-mark" class="w-3 h-3" />
+                                        <span>DICABUT</span>
+                                    </span>
                                 @else
-                                    <span class="px-2.5 py-0.5 rounded-full bg-emerald-800 text-emerald-100 text-[10px] font-extrabold">AKTIF SAH</span>
+                                    <span class="inline-flex items-center gap-1 whitespace-nowrap leading-none px-2.5 py-1 rounded-full bg-emerald-800 text-emerald-100 text-[10px] font-extrabold">
+                                        <x-icon name="check" class="w-3 h-3" />
+                                        <span>AKTIF SAH</span>
+                                    </span>
                                 @endif
                             </td>
-                            <td class="py-3">
+                            <td class="py-3 whitespace-nowrap">
                                 @if(!$cred->isRevoked())
                                     <form method="POST" action="{{ route('admin.credentials.revoke', $cred) }}" class="flex items-center gap-1.5">
                                         @csrf
@@ -217,7 +223,7 @@
                                         </button>
                                     </form>
                                 @else
-                                    <span class="text-[11px] text-red-800 italic">{{ $cred->revoke_reason }}</span>
+                                    <span class="text-[11px] text-red-800 italic whitespace-normal block max-w-xs">{{ $cred->revoke_reason }}</span>
                                 @endif
                             </td>
                         </tr>
@@ -227,28 +233,28 @@
         </div>
     </section>
 
-    {{-- APPEND-ONLY AUDIT TRAIL --}}
+    {{-- RIWAYAT AUDIT --}}
     <section class="honey-card rounded-3xl p-6">
-        <h2 class="text-base font-extrabold text-[#4C2500] mb-3">Append-Only Audit Trail (Anti-Tamper Log)</h2>
+        <h2 class="text-base font-extrabold text-[#4C2500] mb-3">Riwayat Aktivitas &amp; Audit Sistem</h2>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
                 <thead>
                     <tr class="border-b border-[#4C2500]/15 text-[#CD7000] uppercase text-[10px]">
-                        <th class="py-2 pr-3">Timestamp</th>
-                        <th class="py-2 pr-3">Aktor</th>
-                        <th class="py-2 pr-3">Aksi</th>
-                        <th class="py-2 pr-3">IP</th>
-                        <th class="py-2">Detail Diff</th>
+                        <th class="py-2 pr-4 whitespace-nowrap">Waktu</th>
+                        <th class="py-2 pr-4 whitespace-nowrap">Pengguna</th>
+                        <th class="py-2 pr-4 whitespace-nowrap">Aktivitas</th>
+                        <th class="py-2 pr-4 whitespace-nowrap">Alamat IP</th>
+                        <th class="py-2">Ringkasan Perubahan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#4C2500]/10 font-mono text-[11px]">
                     @foreach($auditLogs as $log)
-                        <tr>
-                            <td class="py-2 pr-3">{{ $log->created_at?->format('Y-m-d H:i:s') }}</td>
-                            <td class="py-2 pr-3 font-sans font-bold">{{ $log->actor?->name ?? 'System' }}</td>
-                            <td class="py-2 pr-3 text-[#CD7000] font-bold">{{ $log->action }}</td>
-                            <td class="py-2 pr-3">{{ $log->ip_address ?? '-' }}</td>
-                            <td class="py-2 text-[#4C2500]/75">{{ \Illuminate\Support\Str::limit(json_encode($log->changes_json), 95) }}</td>
+                        <tr class="align-middle">
+                            <td class="py-2.5 pr-4 whitespace-nowrap">{{ $log->created_at?->format('Y-m-d H:i:s') }}</td>
+                            <td class="py-2.5 pr-4 font-sans font-bold whitespace-nowrap">{{ $log->actor?->name ?? 'Sistem' }}</td>
+                            <td class="py-2.5 pr-4 text-[#CD7000] font-bold whitespace-nowrap">{{ $log->action }}</td>
+                            <td class="py-2.5 pr-4 whitespace-nowrap">{{ $log->ip_address ?? '-' }}</td>
+                            <td class="py-2.5 text-[#4C2500]/85">{{ \Illuminate\Support\Str::limit(json_encode($log->changes_json), 95) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
