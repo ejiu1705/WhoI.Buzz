@@ -10,6 +10,7 @@
 
 <p align="center">
   <a href="https://whoi-buzz.vercel.app"><strong>Buka Aplikasi Live (Vercel)</strong></a> •
+  <a href="https://github.com/ejiu1705/WhoI.Buzz"><strong>Repositori GitHub</strong></a> •
   <a href="https://whoi-buzz.vercel.app/verify"><strong>Portal Verifikasi QR</strong></a> •
   <a href="https://whoi-buzz.vercel.app/talent-pool"><strong>Direktori Talenta</strong></a>
 </p>
@@ -42,8 +43,9 @@ Semua akun di bawah ini sudah tersedia baik di **server production** (https://wh
 | **Mahasiswa 3** | Raka Mahendra Putra | `raka.mahendra@campus.ac.id` | `/mahasiswa/dashboard` | NIM `2302050091` • Portofolio **Privat / Opt-Out UU PDP** (`/@raka-mahendra`) |
 | **Mitra Karier / HRD** | Rina Oktavia (TechCorp HRD) | `hrd.mitra@techcorp.id` | `/mitra/dashboard` | Pencarian semantik talenta publik, cek verifikasi QR, dan baca katalog kurikulum SKPI |
 
-### Tautan Sampel Publik (Tanpa Login)
-- **Beranda Utama**: https://whoi-buzz.vercel.app/
+### Tautan Proyek & Sampel Publik (Tanpa Login)
+- **Repositori GitHub**: https://github.com/ejiu1705/WhoI.Buzz
+- **Beranda Utama (Live Production)**: https://whoi-buzz.vercel.app/
 - **Verifikasi SKPI Sah (Valid)**: https://whoi-buzz.vercel.app/verify/WB-SKPI-2026-NADIA1
 - **Dokumen Cetak SKPI Dwibahasa**: https://whoi-buzz.vercel.app/credentials/WB-SKPI-2026-NADIA1/document
 - **Verifikasi Kredensial Dicabut (Revoked)**: https://whoi-buzz.vercel.app/verify/WB-REVOKED-2026-999
