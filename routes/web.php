@@ -11,7 +11,6 @@ use App\Http\Controllers\PublicHubController;
 use App\Http\Controllers\ReviewerController;
 use App\Http\Controllers\SkpiCategoryController;
 use App\Http\Controllers\StudentDashboardController;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Utama Publik: Beranda Tentang WhoI.Buzz (pilihan Login & Registrasi sebelum masuk)
@@ -41,7 +40,7 @@ Route::get('/talent-pool', [PublicHubController::class, 'talentPool'])->name('ta
 
 // Rute Terautentikasi (Semua Role Aktif)
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', fn () => redirect(Auth::user()->dashboardRoute()))->name('dashboard');
+    Route::get('/dashboard', [AuthController::class, 'redirectDashboard'])->name('dashboard');
 
     // Verifikasi Logout & Logout
     Route::get('/logout/verify', [AuthController::class, 'confirmLogout'])->name('logout.confirm');

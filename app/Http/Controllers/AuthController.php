@@ -18,6 +18,14 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
+    public function redirectDashboard(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        return redirect($user->dashboardRoute());
+    }
+
     public function showLogin(): View
     {
         $demoAccounts = app()->isLocal()
