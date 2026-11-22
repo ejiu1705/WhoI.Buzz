@@ -24,6 +24,10 @@ class AuthApiController extends Controller
             return response()->json(['message' => 'Email atau password salah.'], 401);
         }
 
+        if (! $user->hasRole('admin')) {
+            return response()->json(['message' => 'Akses REST API hanya diperuntukkan bagi akun Admin.'], 403);
+        }
+
         return response()->json([
             'message' => 'Login berhasil.',
             'token' => $user->createToken('whoibuzz-api-client')->plainTextToken,

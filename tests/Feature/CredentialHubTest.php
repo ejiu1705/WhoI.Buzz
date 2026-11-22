@@ -171,13 +171,17 @@ class CredentialHubTest extends TestCase
 
     public function test_restful_api_v1_with_sanctum_bearer_token_lifecycle(): void
     {
-        // Public GET works
-        $this->getJson('/api/v1/skpi-categories')->assertOk()->assertJsonStructure(['data', 'links', 'meta']);
-
-        // Protected POST without token -> 401
+        // All API endpoints require Admin Bearer Token (401 without token)
+        $this->getJson('/api/v1/skpi-categories')->assertUnauthorized();
         $this->postJson('/api/v1/skpi-categories', [])->assertUnauthorized();
 
-        // Login API -> receive Bearer token
+        // Non-admin login via API is strictly forbidden (403)
+        $this->postJson('/api/v1/login', [
+            'email' => 'nadia.putri@campus.ac.id',
+            'password' => 'password123',
+        ])->assertForbidden();
+
+        // Admin Login API -> receive Bearer token (for Postman / Admin integration)
         $login = $this->postJson('/api/v1/login', [
             'email' => 'admin.kemahasiswaan@campus.ac.id',
             'password' => 'password123',
@@ -185,7 +189,12 @@ class CredentialHubTest extends TestCase
 
         $token = $login->json('token');
 
-        // Authenticated GET /me
+        // Authenticated GET /skpi-categories & /me as Admin
+        $this->withHeader('Authorization', "Bearer {$token}")
+            ->getJson('/api/v1/skpi-categories')
+            ->assertOk()
+            ->assertJsonStructure(['data', 'links', 'meta']);
+
         $this->withHeader('Authorization', "Bearer {$token}")
             ->getJson('/api/v1/me')
             ->assertOk()

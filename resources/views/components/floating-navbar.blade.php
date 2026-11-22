@@ -78,7 +78,7 @@
                         </a>
                     @endrole
 
-                    @can('lihat progres')
+                    @can('lihat-progres')
                         <a href="{{ route('laporan.progres') }}"
                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition {{ request()->routeIs('laporan.progres') ? 'bg-[#F2AA00] text-[#4C2500]' : 'text-[#F9E7A9] hover:bg-[#FDF6DC]/15 hover:text-[#FDF6DC]' }}">
                             <x-icon name="chart-bar" class="w-3.5 h-3.5" />
@@ -178,7 +178,7 @@
                                 <x-icon name="users" class="w-4 h-4" /><span>Pengguna</span>
                             </a>
                         @endrole
-                        @can('lihat progres')
+                        @can('lihat-progres')
                             <a href="{{ route('laporan.progres') }}" class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold bg-[#FDF6DC]/12 text-[#FDF6DC]">
                                 <x-icon name="chart-bar" class="w-4 h-4" /><span>Progres</span>
                             </a>

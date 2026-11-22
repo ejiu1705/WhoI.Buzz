@@ -17,7 +17,7 @@ class AccountController extends Controller
     {
         $user = $request->user()->load(['roles.permissions', 'studentProfile.advisor']);
         $permissions = $user->getAllPermissions()->pluck('name')->values();
-        $apiTokens = $user->tokens()->latest()->get();
+        $apiTokens = $user->hasRole('admin') ? $user->tokens()->latest()->get() : collect();
 
         return view('account.show', compact('user', 'permissions', 'apiTokens'));
     }
@@ -111,6 +111,6 @@ class AccountController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Akun Anda telah dihapus permanen dari database terpusat.');
+        return redirect()->route('home')->with('success', 'Akun Anda telah dihapus secara permanen.');
     }
 }

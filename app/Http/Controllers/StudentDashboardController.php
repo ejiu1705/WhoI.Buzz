@@ -232,10 +232,17 @@ class StudentDashboardController extends Controller
     public function requestSkpi(Request $request): RedirectResponse
     {
         $student = $request->user();
-        $totalPoints = (int) $student->activities()->where('status', 'approved')->sum('awarded_points');
+        $approvedActivities = $student->activities()->where('status', 'approved')->get();
+        $totalPoints = (int) $approvedActivities->sum('awarded_points');
 
         if ($totalPoints < self::GRADUATION_POINT_THRESHOLD) {
             return back()->with('error', 'Total poin SKPI tervalidasi Anda belum mencapai ambang minimal '.self::GRADUATION_POINT_THRESHOLD.' poin.');
+        }
+
+        $mandatoryIds = SkpiCategory::where('is_mandatory', true)->pluck('id');
+        $fulfilledIds = $approvedActivities->pluck('category_id')->unique();
+        if ($mandatoryIds->diff($fulfilledIds)->isNotEmpty()) {
+            return back()->with('error', 'Seluruh kategori wajib SKPI harus terpenuhi terlebih dahulu sebelum mengajukan penerbitan SKPI.');
         }
 
         // Dispatch through Laravel Queue pipeline (sync run for instant demo responsiveness, queueable in production)
