@@ -133,12 +133,30 @@ class PublicHubController extends Controller
     /**
      * Zero-Trust Private Vault Preview (requires valid Temporary Signed URL + authenticated RBAC policy).
      */
-    public function vaultPreview(Request $request, ActivityFile $activityFile): StreamedResponse
+    public function vaultPreview(Request $request, ActivityFile $activityFile, \App\Services\CertificateVaultService $vault): StreamedResponse|\Illuminate\Http\Response
     {
         $activityFile->loadMissing('activity.student.studentProfile');
         $this->authorize('view', $activityFile->activity);
 
         if (! Storage::disk($activityFile->disk)->exists($activityFile->storage_path)) {
+            if ($activityFile->mime_type === 'image/png' && function_exists('imagecreatetruecolor') && $activityFile->activity?->student) {
+                $act = $activityFile->activity;
+                $bytes = $vault->renderCertificateImageBytes(
+                    $act->student,
+                    $act,
+                    $act->title_id,
+                    $act->organizer,
+                    $act->activity_date?->format('Y-m-d') ?? now()->format('Y-m-d'),
+                    $act->trustTierMeta()['label'] ?? 'Verified Credential'
+                );
+
+                return response($bytes, 200, [
+                    'Content-Type' => 'image/png',
+                    'Cache-Control' => 'private, no-store, max-age=0',
+                    'X-Robots-Tag' => 'noindex, nofollow',
+                ]);
+            }
+
             abort(404, 'Berkas tidak ditemukan di Private Vault.');
         }
 

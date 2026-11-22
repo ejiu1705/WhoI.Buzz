@@ -121,16 +121,16 @@ class CertificateVaultService
     }
 
     /**
-     * Generate a clean sample certificate PNG in the private vault for seeded demo records.
+     * Render a clean certificate preview PNG as raw bytes (used for seeded demo items & serverless fallback).
      */
-    public function storeDemoCertificateImage(
+    public function renderCertificateImageBytes(
         User $student,
         Activity $activity,
         string $titleId,
         string $organizer,
         string $dateStr,
         string $tierLabel
-    ): ActivityFile {
+    ): string {
         $w = 960;
         $h = 640;
         $img = imagecreatetruecolor($w, $h);
@@ -155,13 +155,29 @@ class CertificateVaultService
         imagestring($img, 5, 56, 316, 'Activity  : '.Str::limit($titleId, 68), $espresso);
         imagestring($img, 4, 56, 360, 'Organizer : '.$organizer, $espresso);
         imagestring($img, 4, 56, 396, 'Date      : '.$dateStr, $espresso);
-        imagestring($img, 3, 56, 470, 'Stored in Zero-Trust Private Vault (Signed URL Preview Only)', $amber);
+        imagestring($img, 3, 56, 470, 'Stored in Private Vault (Signed URL Preview Only)', $amber);
         imagestring($img, 3, 56, 496, 'Activity ULID: '.$activity->id, $espresso);
 
         ob_start();
         imagepng($img, null, 7);
         $bytes = (string) ob_get_clean();
         imagedestroy($img);
+
+        return $bytes;
+    }
+
+    /**
+     * Generate a clean sample certificate PNG in the private vault for seeded demo records.
+     */
+    public function storeDemoCertificateImage(
+        User $student,
+        Activity $activity,
+        string $titleId,
+        string $organizer,
+        string $dateStr,
+        string $tierLabel
+    ): ActivityFile {
+        $bytes = $this->renderCertificateImageBytes($student, $activity, $titleId, $organizer, $dateStr, $tierLabel);
 
         $uuid = (string) Str::uuid7();
         $path = "students/{$student->id}/{$uuid}.png";
