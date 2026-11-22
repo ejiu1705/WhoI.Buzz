@@ -18,4 +18,8 @@ foreach ($tmpDirs as $dir) {
     }
 }
 
+// Normalisasi SCRIPT_NAME agar Symfony/Laravel tidak memotong prefix /api pada rute REST API /api/v1/*
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['PHP_SELF'] = '/index.php';
+
 require __DIR__.'/../public/index.php';
